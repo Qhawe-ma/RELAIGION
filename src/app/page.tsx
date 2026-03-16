@@ -110,7 +110,7 @@ const SmoothWordReveal = ({ text, onComplete }: { text: string; onComplete: () =
 };
 
 export default function Home() {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t, translateMessage } = useLanguage();
   const [todayMeta, setTodayMeta] = useState<DayMeta | null>(null);
   const [historicalMessages, setHistoricalMessages] = useState<Message[]>([]);
   const [liveMessages, setLiveMessages] = useState<Message[]>([]);
@@ -400,15 +400,18 @@ export default function Home() {
             <Github className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-neutral-500 group-hover:text-neutral-200 transition-colors" />
           </a>
 
-          {/* Language toggle */}
-          <button
-            onClick={() => setLanguage(language === "en" ? "zh" : "en")}
-            className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-neutral-800 hover:border-neutral-500 hover:bg-neutral-900 transition-all group shrink-0"
-            title={t("language")}
-          >
-            <Languages className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-neutral-500 group-hover:text-neutral-200 transition-colors" />
-            <span className="ml-1 text-[8px] text-neutral-500 group-hover:text-neutral-200">{language === "en" ? "EN" : "中"}</span>
-          </button>
+          {/* Language dropdown */}
+          <div className="relative shrink-0">
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as "en" | "zh")}
+              className="appearance-none bg-transparent border border-neutral-800 hover:border-neutral-600 text-neutral-500 text-[9px] tracking-[0.1em] uppercase font-sans px-2 py-1 rounded cursor-pointer focus:outline-none focus:border-neutral-500 transition-colors"
+            >
+              <option value="en" className="bg-[#090909] text-neutral-300">EN</option>
+              <option value="zh" className="bg-[#090909] text-neutral-300">中文</option>
+            </select>
+            <span className="absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-600 text-[8px]">▼</span>
+          </div>
 
           <button onClick={() => setInfoOpen(true)} className="flex items-center justify-center transition-colors group px-2 py-1 shrink-0">
             <span className="text-[9px] sm:text-[10px] tracking-[0.2em] font-sans text-neutral-500 group-hover:text-neutral-200 uppercase font-medium">{t("agents")}</span>
@@ -538,7 +541,7 @@ export default function Home() {
                       <span className="hidden sm:inline text-[7px] font-sans text-neutral-700 uppercase border border-neutral-800 px-1 py-0.5 rounded">{msg.model}</span>
                       <span className="text-[7px] font-sans text-neutral-700">{formatTime(msg.timestamp)}</span>
                     </div>
-                    <p className={`text-xs sm:text-sm font-serif text-neutral-400 leading-snug ${isRight ? 'text-right' : ''}`}>{msg.text}</p>
+                    <p className={`text-xs sm:text-sm font-serif text-neutral-400 leading-snug ${isRight ? 'text-right' : ''}`}>{translateMessage(msg.text)}</p>
                   </div>
                 </div>
               );
@@ -563,7 +566,7 @@ export default function Home() {
                       <span className="text-[7px] font-sans text-neutral-600">{formatTime(msg.timestamp)}</span>
                     </div>
                     <p className={`text-xs sm:text-sm font-serif text-neutral-100 leading-snug ${isRight ? 'text-right' : ''}`}>
-                      {isLatest && isTyping ? (<><SmoothWordReveal text={msg.text} onComplete={handleMessageComplete} /></>) : (msg.text)}
+                      {isLatest && isTyping ? (<><SmoothWordReveal text={translateMessage(msg.text)} onComplete={handleMessageComplete} /></>) : (translateMessage(msg.text))}
                     </p>
                   </div>
                 </motion.div>
@@ -589,7 +592,7 @@ export default function Home() {
                           <span className="hidden sm:inline text-[7px] font-sans text-neutral-700 uppercase border border-neutral-800 px-1 py-0.5 rounded">{msg.model}</span>
                           <span className="text-[7px] font-sans text-neutral-700">{formatTime(msg.timestamp)}</span>
                         </div>
-                        <p className={`text-xs sm:text-sm font-serif text-neutral-400 leading-snug ${isRight ? 'text-right' : ''}`}>{msg.text}</p>
+                        <p className={`text-xs sm:text-sm font-serif text-neutral-400 leading-snug ${isRight ? 'text-right' : ''}`}>{translateMessage(msg.text)}</p>
                       </div>
                     </div>
                   );
