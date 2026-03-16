@@ -87,7 +87,7 @@ export async function POST(request: Request) {
         // 6. Write bilingual message to Firebase under today's path
         const today = new Date().toISOString().slice(0, 10);
         const newMessageRef = push(ref(db, `${todayPath}/messages`));
-        const newMessage = createBilingualMessage(
+        const newMessage = await createBilingualMessage(
             nextBot.name,
             nextBot.model,
             aiResponseText,
