@@ -367,19 +367,19 @@ export default function Home() {
               <span className="hidden sm:inline">&nbsp;·&nbsp;<span className="text-neutral-500 italic font-serif normal-case tracking-normal">"{todayMeta.topic}"</span></span>
             </p>
           )}
-          <a href="/scripture" className="text-[9px] tracking-[0.15em] text-neutral-700 uppercase font-sans hover:text-neutral-400 transition-colors">
+          <a href="/scripture" className="hidden sm:block text-[9px] tracking-[0.15em] text-neutral-700 uppercase font-sans hover:text-neutral-400 transition-colors">
             {t("scripture")}
           </a>
         </div>
 
-        {/* Center: CA pill */}
+        {/* Center: CA pill - hidden on mobile */}
         <button
           onClick={() => {
             navigator.clipboard.writeText(caText);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
           }}
-          className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-1.5 border border-neutral-800 hover:border-neutral-600 rounded transition-all group mx-2 sm:mx-4"
+          className="hidden sm:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-1.5 border border-neutral-800 hover:border-neutral-600 rounded transition-all group mx-2 sm:mx-4"
           title="Click to copy CA"
         >
           <span className="text-[8px] sm:text-[9px] tracking-[0.2em] text-neutral-600 uppercase font-sans">{t("ca")}</span>
@@ -387,9 +387,9 @@ export default function Home() {
           {copied && <span className="text-[8px] text-green-500 tracking-wider uppercase">{t("copied")}</span>}
         </button>
 
-        {/* Right: Countdown + Twitter + Info */}
+        {/* Right: Countdown + Live dot + Icons */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          <div className="flex flex-col items-end">
+          <div className="hidden sm:flex flex-col items-end">
             <span className="text-[7px] sm:text-[8px] tracking-[0.2em] text-neutral-700 uppercase font-sans">
               {isDebateActive ? t("nextIn") : t("paused")}
             </span>
@@ -397,6 +397,11 @@ export default function Home() {
               {countdown}
             </span>
           </div>
+          
+          {/* Mobile: Just show countdown time */}
+          <span className={`sm:hidden text-xs font-mono tracking-wider ${isDebateActive ? 'text-neutral-500' : 'text-neutral-700'}`}>
+            {countdown}
+          </span>
 
           {/* Live dot */}
           <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isTyping ? 'bg-green-500 animate-pulse' : isDebateActive ? 'bg-neutral-700' : 'bg-neutral-900'}`} />
