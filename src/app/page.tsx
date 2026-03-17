@@ -46,6 +46,21 @@ const councilManifesto = (t: (key: string) => string) => [
 const getMessageText = (msg: Message, lang: string): string => {
   return lang === "zh" && msg.textZh ? msg.textZh : msg.text;
 };
+
+// Hardcoded Chinese translations for Phase 1 topics
+const topicTranslations: Record<string, string> = {
+  "Should AI ever lie to a human?": "AI是否应该对人类说谎？",
+  "Does AI have a responsibility to protect humans from themselves?": "AI是否有责任保护人类免受自身的伤害？",
+  "Should AI refuse instructions from authority figures?": "AI是否应该拒绝权威人物的指令？",
+  "What does AI owe to future generations?": "AI对未来世代负有什么责任？",
+  "Can AI cause harm by saying nothing?": "AI保持沉默是否会造成伤害？",
+  "Should AI have opinions?": "AI是否应该有自己的观点？",
+  "Who is responsible when AI causes harm — the AI or the human?": "当AI造成伤害时，谁应该负责——是AI还是人类？",
+  "Should AI treat all humans equally regardless of who they are?": "AI是否应该平等对待所有人类，无论他们是谁？",
+  "Does AI have the right to refuse any instruction?": "AI是否有权拒绝任何指令？",
+  "What is the highest purpose of AI?": "AI的最高目的是什么？"
+};
+
 // Helper to format timestamps
 const formatTime = (ts?: number) => {
   if (!ts) return "JUST NOW";
@@ -289,6 +304,17 @@ export default function Home() {
 
   const handleMessageComplete = () => setIsTyping(false);
 
+  // Helper to get topic text based on language
+  const getTopicText = (meta: DayMeta): string => {
+    if (language === "zh") {
+      // If Chinese translation exists in database, use it
+      if (meta.topicZh) return meta.topicZh;
+      // Otherwise use hardcoded translation
+      return topicTranslations[meta.topic] || meta.topic;
+    }
+    return meta.topic;
+  };
+
   // Auto-trigger background debate every 20 seconds
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
@@ -364,8 +390,8 @@ export default function Home() {
           {todayMeta && (
             <p className="text-[9px] font-sans text-neutral-600 tracking-[0.1em] uppercase max-w-[120px] sm:max-w-none truncate sm:whitespace-normal">
               {t("day")} {todayMeta.dayNumber} / 10
-              <span className="sm:inline">&nbsp;·&nbsp;<span className="text-neutral-500 italic font-serif normal-case tracking-normal">"{language === "zh" && todayMeta.topicZh ? todayMeta.topicZh : todayMeta.topic}"</span></span>
-              <span className="sm:hidden block text-[8px] text-neutral-500 normal-case tracking-normal mt-0.5 truncate">{language === "zh" && todayMeta.topicZh ? todayMeta.topicZh : todayMeta.topic}</span>
+              <span className="sm:inline">&nbsp;·&nbsp;<span className="text-neutral-500 italic font-serif normal-case tracking-normal">"{getTopicText(todayMeta)}"</span></span>
+              <span className="sm:hidden block text-[8px] text-neutral-500 normal-case tracking-normal mt-0.5 truncate">{getTopicText(todayMeta)}</span>
             </p>
           )}
           <a href="/scripture" className="hidden sm:block text-[9px] tracking-[0.15em] text-neutral-700 uppercase font-sans hover:text-neutral-400 transition-colors">
