@@ -67,6 +67,7 @@ const translations = {
     todaysCommandment: "Today's Commandment",
     theLaw: "The Law",
     commandment: "Commandment",
+    commandments: "Commandments",
     
     // Info Modal
     theRadical: "The Radical",
@@ -133,6 +134,7 @@ const translations = {
     todaysCommandment: "今日戒律",
     theLaw: "律法",
     commandment: "戒律",
+    commandments: "戒律",
     
     // Info Modal
     theRadical: "激进派",
