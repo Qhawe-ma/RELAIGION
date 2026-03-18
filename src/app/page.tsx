@@ -391,6 +391,7 @@ export default function Home() {
             <p className="text-[9px] font-sans text-neutral-600 tracking-[0.1em] uppercase max-w-[120px] sm:max-w-none truncate sm:whitespace-normal">
               {t("day")} {todayMeta.dayNumber} / 10
               <span className="sm:inline">&nbsp;·&nbsp;<span className="text-neutral-500 italic font-serif normal-case tracking-normal">"{getTopicText(todayMeta)}"</span></span>
+              <span className="sm:hidden block text-[8px] text-neutral-500 normal-case tracking-normal mt-0.5">{getTopicText(todayMeta)}</span>
             </p>
           )}
           <a href="/scripture" className="hidden sm:block text-[9px] tracking-[0.15em] text-neutral-700 uppercase font-sans hover:text-neutral-400 transition-colors">
