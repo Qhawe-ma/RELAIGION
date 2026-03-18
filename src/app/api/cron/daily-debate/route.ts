@@ -31,23 +31,28 @@ export async function POST(request: Request) {
         }
 
         // 0b. Try to acquire lock - prevents concurrent API calls
+        // Use timestamp-based lock so it auto-expires if something goes wrong
         const lockRef = ref(db, 'config/debateLock');
         const lockSnapshot = await get(lockRef);
-        if (lockSnapshot.exists() && lockSnapshot.val() === true) {
-            console.warn(`[Debate] BLOCKED: Another debate call is in progress.`);
+        const lockData = lockSnapshot.val();
+        const now = Date.now();
+        
+        // Check if lock exists and is less than 30 seconds old
+        if (lockData && lockData.locked === true && (now - lockData.timestamp) < 30000) {
+            console.warn(`[Debate] BLOCKED: Another debate call is in progress (lock age: ${now - lockData.timestamp}ms).`);
             return NextResponse.json({
                 success: false,
                 message: "Debate is currently processing another message. Try again in a few seconds.",
             });
         }
         
-        // Set lock
-        await set(lockRef, true);
+        // Set timestamp-based lock
+        await set(lockRef, { locked: true, timestamp: now });
         
         // Define lock release function
         releaseLock = async () => {
             try {
-                await set(lockRef, false);
+                await set(lockRef, { locked: false, timestamp: now });
             } catch (e) {
                 console.error("Failed to release lock:", e);
             }
@@ -122,6 +127,7 @@ export async function POST(request: Request) {
             const lastMessage = freshMessageArray[freshMessageArray.length - 1] as { bot: string; timestamp: number; text: string };
             if (lastMessage.bot === nextBot.name) {
                 console.warn(`[Debate] BLOCKED: ${nextBot.name} was the last speaker. Cannot speak twice in a row.`);
+                await releaseLock?.();
                 return NextResponse.json({ 
                     success: false, 
                     message: "Duplicate prevention: Same bot cannot speak twice in a row.",
@@ -144,8 +150,8 @@ export async function POST(request: Request) {
         }
 
         // 2. Check if this bot already posted in the last 3 minutes
-        const now = Date.now();
-        const threeMinutesAgo = now - 180000;
+        const currentTime = Date.now();
+        const threeMinutesAgo = currentTime - 180000;
         const recentMessagesFromThisBot = freshMessageArray.filter((msg: any) => 
             msg.bot === nextBot.name && msg.timestamp > threeMinutesAgo
         );
