@@ -289,12 +289,15 @@ export default function Home() {
       }
     };
     
-    // Scroll immediately
-    scrollToBottom();
-    
-    // Scroll again after a short delay to ensure content is rendered
-    setTimeout(scrollToBottom, 100);
-    setTimeout(scrollToBottom, 500);
+    // Only scroll if we have messages
+    if (historicalMessages.length > 0 || liveMessages.length > 0) {
+      // Scroll immediately
+      scrollToBottom();
+      
+      // Scroll again after a short delay to ensure content is rendered
+      setTimeout(scrollToBottom, 100);
+      setTimeout(scrollToBottom, 500);
+    }
   }, []);
 
   // Scroll to bottom when messages change
