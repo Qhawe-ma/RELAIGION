@@ -84,6 +84,37 @@ export async function POST(request: Request) {
             console.warn(`[Debate] ${nextBot.name} API error — posting tired message. Error: ${apiError.message}`);
         }
 
+        // CRITICAL: Check for duplicate messages before writing
+        // 1. Check if this bot already posted in the last 30 seconds (prevents rapid double-posting)
+        const now = Date.now();
+        const thirtySecondsAgo = now - 30000;
+        const recentMessagesFromThisBot = messageArray.filter((msg: any) => 
+            msg.bot === nextBot.name && msg.timestamp > thirtySecondsAgo
+        );
+        
+        if (recentMessagesFromThisBot.length > 0) {
+            console.warn(`[Debate] BLOCKED: ${nextBot.name} attempted to post again within 30 seconds. Skipping.`);
+            return NextResponse.json({ 
+                success: false, 
+                message: "Duplicate prevention: Bot already posted recently.",
+                nextSpeaker: nextSpeakerName 
+            });
+        }
+
+        // 2. Check if the exact same content was already posted by this bot
+        const duplicateContent = messageArray.find((msg: any) => 
+            msg.bot === nextBot.name && msg.text === aiResponseText
+        );
+        
+        if (duplicateContent) {
+            console.warn(`[Debate] BLOCKED: ${nextBot.name} attempted to post duplicate content. Skipping.`);
+            return NextResponse.json({ 
+                success: false, 
+                message: "Duplicate prevention: Same content already posted.",
+                nextSpeaker: nextSpeakerName 
+            });
+        }
+
         // 6. Write bilingual message to Firebase under today's path
         const today = new Date().toISOString().slice(0, 10);
         const newMessageRef = push(ref(db, `${todayPath}/messages`));

@@ -155,6 +155,14 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
+  
+  // Global Set to track rendered message IDs - persists across renders
+  const renderedMessageIds = useRef<Set<string>>(new Set());
+  
+  // Helper to generate unique message ID
+  const getMessageId = (msg: Message): string => {
+    return `${msg.bot}-${msg.timestamp}-${msg.text?.slice(0, 100)}`;
+  };
 
   // Use frozenRemainingMs from Firebase (set when paused) — this is the locked-in remaining time
   const frozenMs = !isDebateActive ? frozenRemainingMs : null;
@@ -637,6 +645,12 @@ export default function Home() {
             )}
 
             {viewingDay === null && historicalMessages.map((msg, i) => {
+              const msgId = getMessageId(msg);
+              // Skip if already rendered
+              if (renderedMessageIds.current.has(msgId)) return null;
+              // Mark as rendered
+              renderedMessageIds.current.add(msgId);
+              
               const isRight = i % 2 !== 0;
               return (
                 <div key={`hist-${i}`} className={`flex items-start gap-2 w-full ${isRight ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -659,11 +673,13 @@ export default function Home() {
 
             {viewingDay === null && visibleMessages.map((msgIndex) => {
               const msg = liveMessages[msgIndex];
-              // Skip if this message already exists in historicalMessages (prevent duplicates)
-              const isDuplicate = historicalMessages.some(histMsg => 
-                histMsg.timestamp === msg.timestamp && histMsg.bot === msg.bot
-              );
-              if (isDuplicate) return null;
+              const msgId = getMessageId(msg);
+              
+              // Skip if already rendered (global deduplication)
+              if (renderedMessageIds.current.has(msgId)) return null;
+              // Mark as rendered
+              renderedMessageIds.current.add(msgId);
+              
               const isLatest = msgIndex === visibleMessages.length - 1;
               const isRight = (historicalMessages.length + msgIndex) % 2 !== 0;
               return (
