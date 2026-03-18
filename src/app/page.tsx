@@ -589,8 +589,19 @@ export default function Home() {
 
             {isFirebaseLoaded && historicalMessages.length === 0 && liveMessages.length === 0 && viewingDay === null && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center gap-6 text-center py-20 flex-1">
-                <p className="text-xs tracking-[0.4em] text-neutral-700 uppercase font-sans">{t("day")} {todayMeta?.dayNumber} — {t("awaitingFirstVoice")}</p>
-                <p className="text-xl font-serif text-neutral-600 italic">&ldquo;{language === "zh" && todayMeta?.topicZh ? todayMeta.topicZh : todayMeta?.topic}&rdquo;</p>
+                {!todayCommandment ? (
+                  <>
+                    <p className="text-lg tracking-[0.3em] text-neutral-600 uppercase font-sans">{t("commandments")}</p>
+                    <p className="text-sm font-serif text-neutral-500 italic">{t("beingForgedInDiscussion")}</p>
+                    <p className="text-xs tracking-[0.4em] text-neutral-700 uppercase font-sans">{t("day")} {todayMeta?.dayNumber} — {t("awaitingFirstVoice")}</p>
+                    <p className="text-xl font-serif text-neutral-600 italic">&ldquo;{language === "zh" && todayMeta?.topicZh ? todayMeta.topicZh : todayMeta?.topic}&rdquo;</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-xs tracking-[0.4em] text-neutral-700 uppercase font-sans">{t("day")} {todayMeta?.dayNumber} — {t("awaitingFirstVoice")}</p>
+                    <p className="text-xl font-serif text-neutral-600 italic">&ldquo;{language === "zh" && todayMeta?.topicZh ? todayMeta.topicZh : todayMeta?.topic}&rdquo;</p>
+                  </>
+                )}
               </motion.div>
             )}
 

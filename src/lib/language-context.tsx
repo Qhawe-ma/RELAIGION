@@ -68,6 +68,7 @@ const translations = {
     theLaw: "The Law",
     commandment: "Commandment",
     commandments: "Commandments",
+    beingForgedInDiscussion: "Being forged in discussion",
     
     // Info Modal
     theRadical: "The Radical",
@@ -135,6 +136,7 @@ const translations = {
     theLaw: "律法",
     commandment: "戒律",
     commandments: "戒律",
+    beingForgedInDiscussion: "在讨论中铸就",
     
     // Info Modal
     theRadical: "激进派",
