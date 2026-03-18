@@ -600,7 +600,7 @@ export default function Home() {
           </div>
 
           {/* Scrollable messages */}
-          <div ref={scrollRef} className="h-[55vh] sm:h-[60vh] overflow-y-auto p-3 sm:p-5 flex flex-col gap-3">
+          <div ref={scrollRef} className="h-[55vh] sm:h-[60vh] overflow-y-auto p-3 sm:p-5 flex flex-col gap-3 flex-col-reverse">
 
             {isFirebaseLoaded && historicalMessages.length === 0 && liveMessages.length === 0 && viewingDay === null && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center gap-6 text-center py-20 flex-1">
@@ -609,7 +609,7 @@ export default function Home() {
               </motion.div>
             )}
 
-            {viewingDay === null && historicalMessages.map((msg, i) => {
+            {viewingDay === null && [...historicalMessages].reverse().map((msg, i) => {
               const isRight = i % 2 !== 0;
               return (
                 <div key={`hist-${i}`} className={`flex items-start gap-2 w-full ${isRight ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -630,7 +630,7 @@ export default function Home() {
               );
             })}
 
-            {viewingDay === null && visibleMessages.map((msgIndex) => {
+            {viewingDay === null && [...visibleMessages].reverse().map((msgIndex) => {
               const msg = liveMessages[msgIndex];
               const isLatest = msgIndex === visibleMessages.length - 1;
               const isRight = (historicalMessages.length + msgIndex) % 2 !== 0;
