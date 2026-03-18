@@ -659,6 +659,11 @@ export default function Home() {
 
             {viewingDay === null && visibleMessages.map((msgIndex) => {
               const msg = liveMessages[msgIndex];
+              // Skip if this message already exists in historicalMessages (prevent duplicates)
+              const isDuplicate = historicalMessages.some(histMsg => 
+                histMsg.timestamp === msg.timestamp && histMsg.bot === msg.bot
+              );
+              if (isDuplicate) return null;
               const isLatest = msgIndex === visibleMessages.length - 1;
               const isRight = (historicalMessages.length + msgIndex) % 2 !== 0;
               return (
