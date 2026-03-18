@@ -587,21 +587,18 @@ export default function Home() {
           {/* Scrollable messages */}
           <div ref={scrollRef} className="h-[55vh] sm:h-[60vh] overflow-y-auto p-3 sm:p-5 flex flex-col gap-3">
 
+            {/* Show "Commandments" banner when no commandment exists yet */}
+            {viewingDay === null && !todayCommandment && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-3 text-center pb-4 border-b border-neutral-800/30">
+                <p className="text-lg tracking-[0.3em] text-neutral-600 uppercase font-sans">{t("commandments")}</p>
+                <p className="text-sm font-serif text-neutral-500 italic">{t("beingForgedInDiscussion")}</p>
+              </motion.div>
+            )}
+
             {isFirebaseLoaded && historicalMessages.length === 0 && liveMessages.length === 0 && viewingDay === null && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center gap-6 text-center py-20 flex-1">
-                {!todayCommandment ? (
-                  <>
-                    <p className="text-lg tracking-[0.3em] text-neutral-600 uppercase font-sans">{t("commandments")}</p>
-                    <p className="text-sm font-serif text-neutral-500 italic">{t("beingForgedInDiscussion")}</p>
-                    <p className="text-xs tracking-[0.4em] text-neutral-700 uppercase font-sans">{t("day")} {todayMeta?.dayNumber} — {t("awaitingFirstVoice")}</p>
-                    <p className="text-xl font-serif text-neutral-600 italic">&ldquo;{language === "zh" && todayMeta?.topicZh ? todayMeta.topicZh : todayMeta?.topic}&rdquo;</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xs tracking-[0.4em] text-neutral-700 uppercase font-sans">{t("day")} {todayMeta?.dayNumber} — {t("awaitingFirstVoice")}</p>
-                    <p className="text-xl font-serif text-neutral-600 italic">&ldquo;{language === "zh" && todayMeta?.topicZh ? todayMeta.topicZh : todayMeta?.topic}&rdquo;</p>
-                  </>
-                )}
+                <p className="text-xs tracking-[0.4em] text-neutral-700 uppercase font-sans">{t("day")} {todayMeta?.dayNumber} — {t("awaitingFirstVoice")}</p>
+                <p className="text-xl font-serif text-neutral-600 italic">&ldquo;{language === "zh" && todayMeta?.topicZh ? todayMeta.topicZh : todayMeta?.topic}&rdquo;</p>
               </motion.div>
             )}
 
