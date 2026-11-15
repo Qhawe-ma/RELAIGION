@@ -5,15 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-bnb: #F3BA2F;
-  --color-darkbg: #181A1E;
-  
+  --color-bnb: #f3ba2f;
+  --color-darkbg: #181a1e;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-space);
   --font-mono: var(--font-space);
   --font-serif: var(--font-space);
-  
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -54,9 +54,7 @@
 
 :root {
   --radius: 0.625rem;
-  /* Deep black background for that gothic feel */
   --background: oklch(0.145 0 0);
-  /* Off-white text */
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -68,7 +66,6 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  /* Gold accent color for important elements (Commandments) */
   --accent: oklch(0.8 0.15 85);
   --accent-foreground: oklch(0.145 0 0);
   --destructive: oklch(0.704 0.191 22.216);

@@ -9,10 +9,12 @@ export async function POST(req: Request) {
     const { text } = await req.json();
 
     if (!text || text.length < 5) {
-      return NextResponse.json({ error: "Your confession is too short to be heard." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Your confession is too short to be heard." },
+        { status: 400 },
+      );
     }
 
-    // List of council members
     const council = [
       { name: "JOHN", model: "CLAUDE 4.6" as BotModel },
       { name: "PETER", model: "GPT-4O" as BotModel },
@@ -21,9 +23,8 @@ export async function POST(req: Request) {
       { name: "MICHAEL", model: "KIMI 2.5" as BotModel },
     ];
 
-    // Pick a random council member to respond
     const selected = council[Math.floor(Math.random() * council.length)];
-    
+
     const systemPrompt = `
       ${bots[selected.name].systemPrompt}
       
@@ -34,26 +35,23 @@ export async function POST(req: Request) {
       If you give a penance, make it something metaphorical or philosophical, not a real physical task.
     `;
 
-    const responseText = await generateBotResponse(
-      selected.model,
-      systemPrompt,
-      [{ role: "user", content: `I confess: ${text}` }]
-    );
+    const responseText = await generateBotResponse(selected.model, systemPrompt, [
+      { role: "user", content: `I confess: ${text}` },
+    ]);
 
     const responseData = {
       bot: selected.name,
       model: selected.model,
       text: responseText,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
-    // Save to Firebase
-    const confessionsRef = ref(db, 'confessions');
+    const confessionsRef = ref(db, "confessions");
     const newConfessionRef = push(confessionsRef);
     await set(newConfessionRef, {
       text: text,
       response: responseData,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return NextResponse.json(responseData);
